@@ -8,7 +8,7 @@ I will make an installation script soon. For now, follow these semi-simple instr
 1. Download the latest Edul release
 2. Extract the zip file
 3. In ~/usr/local/bin, make a directory named edul-tui
-4. Copy all files in the edul-tui directory, inside edulink-tui-main that you downloaded, to edul-tui in ~/usr/local/bin
+4. Copy all files in the edul-tui directory, inside edulink-tui-1.1.2 that you downloaded, to edul-tui in ~/usr/local/bin
 5. Copy the file just named edul that is inside the edul-tui file you downloaded, to ~/usr/local/bin (do not copy this inside the directory you made, just simply copy it to /usr/local/bin)
 6. Check you installed it correctly by doing the edul command in terminal
 
