@@ -2,4 +2,4 @@
 
 SCRIPT_PATH="$(realpath -se "$(dirname "$0")")"
 
-python "$SCRIPT_PATH"/entry.py "$@"
+python "$SCRIPT_PATH"/edul-tui/entry.py "$@"
