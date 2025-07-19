@@ -1,16 +1,23 @@
 # Edul - Edulink-TUI 
 A text based Edulink client.
 
+NOTICE:
+AN ERROR IN THE CODE HAS CAUSED THE LATEST RELEASE TO NOT RECOGNISE ANY MODULES AS MODULES. THIS IS AN EASY FIX AND IS ACTIVELY BEING WORKED ON.
+
 # Installation
 
 I will make an installation script soon. For now, follow these semi-simple instructions for installation:
 
-1. Download the latest Edul release
-2. Extract the zip file
-3. In ~/usr/local/bin, make a directory named edul-tui
-4. Copy all files in the edul-tui directory, inside edulink-tui-1.1.2 that you downloaded, to edul-tui in ~/usr/local/bin
-5. Copy the file just named edul that is inside the edul-tui file you downloaded, to ~/usr/local/bin (do not copy this inside the directory you made, just simply copy it to /usr/local/bin)
-6. Check you installed it correctly by doing the edul command in terminal
+1. Download the latest Edul release as a .zip
+2. Copy, paste and execute this into your terminal: 
+  `cd ~/Downloads
+   unzip edulink-tui-1.1.3.zip
+   cd edulink-tui-1.1.3
+   sudo cp * /usr/local/bin -r
+   cd /usr/local/bin
+   sudo chmod +x edul`
+3. Run edul -l
+4. Enjoy!
 
 ### Troubleshooting
 
