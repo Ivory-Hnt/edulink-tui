@@ -11,7 +11,7 @@ I will make an installation script soon. For now, follow these semi-simple instr
 1. Download the latest Edul release as a .zip
 2. Copy, paste and execute this into your terminal: 
   ``cd ~/Downloads
-   unzip edulink-tui-1.1.3.zip
+`` unzip edulink-tui-1.1.3.zip``
    cd edulink-tui-1.1.3
    sudo cp * /usr/local/bin -r
    cd /usr/local/bin
