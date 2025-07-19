@@ -18,7 +18,6 @@ cd edulink-tui-1.1.3
 sudo cp * /usr/local/bin -r
 cd /usr/local/bin
 sudo chmod +x edul
-
 ```
 
 4. Run edul -l
