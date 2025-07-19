@@ -9,9 +9,12 @@ AN ERROR IN THE CODE HAS CAUSED THE LATEST RELEASE TO NOT RECOGNISE ANY MODULES 
 I will make an installation script soon. For now, follow these semi-simple instructions for installation:
 
 1. Download the latest Edul release as a .zip
-2. Copy, paste and execute this into your terminal: 
+2. Copy, paste and execute this into your terminal:
+   
 ``a``
+
 ``a``
+
 4. Run edul -l
 5. Enjoy!
 
