@@ -11,8 +11,8 @@ I will make an installation script soon. For now, follow these semi-simple instr
 1. Download the latest Edul release as a .zip
 2. Copy, paste and execute this into your terminal:
    
-`a
-a`
+```a
+a```
 
 4. Run edul -l
 5. Enjoy!
