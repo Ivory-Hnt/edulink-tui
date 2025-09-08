@@ -1,10 +1,9 @@
 # Edul - Edulink-TUI 
 A text based Edulink client.
 
-NOTICE:
-AN ERROR IN THE CODE HAS CAUSED THE LATEST RELEASE TO NOT RECOGNISE ANY MODULES AS MODULES. THIS IS AN EASY FIX AND IS ACTIVELY BEING WORKED ON.
-
 # Installation
+
+Please copy this, paste it then execute it in your shell:
 
 ```
 git clone https://github.com/Ivory-Hnt/edulink-tui.git
@@ -58,4 +57,5 @@ If a longer version of a command is available in the main command, it is avaiabl
 ### Accounts
 
 As stated above, you can have a near infinite amount of edulink accounts for edul. When you execute a command such as `edul --timetable`, it will default to the account that has the account ID, 1. To make it show the timetable for the account that has the account ID, 2, you can do this: `edul --timetable 2`. By adding the account ID as an argument at the end of a command, it tells it that it will run this command with the login details for the account with the ID, 2. This works for every other command. Obviously it won't work for commands such as `edul --help`
+
 
