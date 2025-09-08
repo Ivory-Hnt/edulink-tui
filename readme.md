@@ -23,6 +23,10 @@ If it tells you something along the lines of, the folder edul/data can not be cr
 
 You should now be able to execute the `edul` command without any errors. If you can't, send me a DM on discord (sodiumicecream).
 
+## Quick Notice
+
+This information might be out of date as updating the readme.md for this project is the least of my worries in life. If you need assistance, dm me on discord at `sodiumicecream` or email me at `ivory@ivoryhnt.dev`. The instructions for installing edul and `edul --help` are always up to date
+
 # Setup
 
 To setup edul, you first need to login. To login, do `edul -l`. It will then prompt you to tell it which login ID you would like to save this as. This is because you can have as many edulink logins as you like. To learn more about this, find the edulink accounts section in the list of commands below.
@@ -57,5 +61,6 @@ If a longer version of a command is available in the main command, it is avaiabl
 ### Accounts
 
 As stated above, you can have a near infinite amount of edulink accounts for edul. When you execute a command such as `edul --timetable`, it will default to the account that has the account ID, 1. To make it show the timetable for the account that has the account ID, 2, you can do this: `edul --timetable 2`. By adding the account ID as an argument at the end of a command, it tells it that it will run this command with the login details for the account with the ID, 2. This works for every other command. Obviously it won't work for commands such as `edul --help`
+
 
 
