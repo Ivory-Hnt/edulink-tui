@@ -15,14 +15,13 @@
 # This software is provided as is without warranty of any kind
 #
 
-
 import Student
 import re
 import html
 from Student import Student
 import os
 import json
-
+from datetime import date, timedelta
 
 me = Student()
 
@@ -45,246 +44,209 @@ def intro() :
     print("                 ------------------------------------------                 ")
     print("\n" * 15)
 
-
-# MODIFIED: auth now accepts login_id as an argument
-def auth(login_id=None) : # Added login_id parameter with a default of None
-
-    # Define the path to your JSON file
-    # Use os.path.expanduser to resolve the '~' to the full home directory path
-    # Use f-string to include login_id in the path
-    # If login_id is None (e.g., for default usage without a specific ID), use an empty string
-    file_suffix = str(login_id) if login_id is not None else ''
-    json_file_path = os.path.expanduser(f'~/edul/data/data{file_suffix}.json')
-
+# MODIFIED: auth now reads the active account from a config file.
+def auth():
+    active_account_path = os.path.expanduser('~/edul/data/active_account.txt')
 
     try:
-        # Open the JSON file in read mode
-        with open(json_file_path, 'r') as f:
-            # Load the JSON data into a Python dictionary
-            data = json.load(f)
+        with open(active_account_path, 'r') as f:
+            login_id = f.read().strip()
+            if not login_id:
+                raise FileNotFoundError # Treat empty file as not found
+    except FileNotFoundError:
+        print("Error: No active account is set.")
+        print("Please set an active account using: edul -a <id>")
+        exit()
 
-        # Assign the values to variables
+    json_file_path = os.path.expanduser(f'~/edul/data/data{login_id}.json')
+
+    try:
+        with open(json_file_path, 'r') as f:
+            data = json.load(f)
         username = data.get('username')
         password = data.get('password')
         schoolid = data.get('schoolid')
-
     except FileNotFoundError:
-        print(f"Could not find the login details file at {json_file_path}.")
-        print("Please run edul -l to login.")
+        print(f"Error: Login details for active account ID {login_id} not found.")
+        print(f"Please run 'edul -l' to configure account {login_id}, or switch accounts with 'edul -a <id>'.")
         exit()
     except json.JSONDecodeError:
-        print(f"Error: The login details file at {json_file_path} is malformed or empty.")
-        print("Please run edul -l to re-login and create a valid file.")
+        print(f"Error: The login details file for account {login_id} is malformed.")
+        print("Please run 'edul -l' to re-login and create a valid file.")
         exit()
     except Exception as e:
-        print(f"Could not fetch login details. Please run edul -l to login. Full error: {e}")
+        print(f"An unknown error occurred while fetching login details: {e}")
         exit()
 
     try:
+        print(f"Authenticating with account ID: {login_id}...")
         me.authenticate(username=username, password=password, school_postcode=schoolid)
+        print("Authentication successful.")
     except Exception as e:
-        print(f"An error occurred during authentication: {e}")
+        print(f"\nAn error occurred during authentication for account {login_id}: {e}")
         exit()
 
 def help() :
     print("\n" * 79)
     print("                 ------- Edulink Terminal Interface Help -------                 ")
     print("\n" * 2)
-    print("               -t or --timetable  -  Shows your timetable for today.")
+    print("               -l or --login        -  Set up a new login account profile.")
+    print("               -a or --account <id> -  Set the active account to use for commands.")
     print("")
-    print("               -l or --login  -  Sets your login details for edulink.")
+    print("               -t or --timetable [days] -  Show timetable. [days] is optional.")
+    print("                                          (e.g., '-t' for today, '-t 1' for tomorrow)")
     print("")
-    print("            -h or --homework  -  Shows your upcoming homework assignments.")
-    print("")
-    print("")
-    print("")
-    print("")
-    print("            Please view the README.md file for command arguments and usage.")
+    print("               -h or --homework [sub] -  Show homework. [sub] can be 'old' or 'info <id>'.")
+    print("\n" * 2)
+    print("            Please view the README.md file for more detailed usage.")
     print("\n" * 2)
     print("                 -----------------------------------------------                 ")
-    print("\n" * 18)
+    print("\n" * 15)
 
+# MODIFIED: Function now takes an integer for days in the future and provides clearer output.
+def timetable(days_in_future=0):
+    target_date = date.today() + timedelta(days=days_in_future)
+    api_date_str = target_date.strftime("%Y-%m-%d")
 
-# --- Timetable Output ---
-def timetable():
+    # Generate a more descriptive, user-friendly title for the timetable
+    if days_in_future == 0:
+        day_name = "Today"
+    elif days_in_future == 1:
+        day_name = "Tomorrow"
+    else:
+        day_name = target_date.strftime("%A")
+
+    display_date_str = f"{day_name} ({target_date.strftime('%d %B %Y')})"
+    header = f"--- Timetable for {display_date_str} ---"
+
     try:
-        timetable_data = me.timetable()
+        timetable_data = me.timetable(date=api_date_str)
 
         print("\n" * 104)
-
-        # --- Print the timetable in a readable format ---
-        print("-" * 30) # Prints a separating line
+        print(header)
+        print("-" * len(header))
         print("")
 
-        period = 0
+        if not timetable_data:
+            print(f"    No lessons found for this day.")
+        else:
+            period = 0
+            for lesson in timetable_data:
+                teacher = lesson.get('teachers', 'N/A')
+                room = lesson.get('room', {}).get('name', 'N/A')
+                subject = lesson.get('teaching_group', {}).get('subject', 'N/A')
+                group = lesson.get('teaching_group', {}).get('name', 'N/A')
+                period += 1
 
-
-
-        for lesson in timetable_data:
-            teacher = lesson.get('teachers', 'N/A')
-            room = lesson.get('room', {}).get('name', 'N/A')
-            subject = lesson.get('teaching_group', {}).get('subject', 'N/A')
-            group = lesson.get('teaching_group', {}).get('name', 'N/A')
-            period = period + 1
-
-            print(f"    Lesson: {subject}")
-            print(f"    Period: {period}")
-            print(f"    Teacher: {teacher}")
-            print(f"    Room: {room}")
-            print(f"    Class: {group}")
-            print("")
-            print("-" * 30) # Separator for the next lesson
-            print("")
-
-        print("\n" * 4)
+                print(f"    Lesson: {subject}")
+                print(f"    Period: {period}")
+                print(f"    Teacher: {teacher}")
+                print(f"    Room: {room}")
+                print(f"    Class: {group}")
+                print("-" * 30)
+                print("")
 
     except Exception as e:
-        print(f"An error occurred while fetching the timetable: {e}")
+        # Gracefully handle the specific error when no timetable data is available
+        if "No timetable data was found for the EXACT date" in str(e):
+            print("\n" * 104)
+            print(header)
+            print("-" * len(header))
+            print(f"\n    No timetable data is available for this day.")
+        else:
+            print(f"An unexpected error occurred while fetching the timetable: {e}")
 
-
-# handler.py
-
-# ... (rest of your imports and code) ...
+    finally:
+        print("\n" * 4)
 
 def homework():
     try:
-        homework_data = me.homework()  # Call the homework method to get the data
-
-        print("\n" * 82)
-
+        homework_data = me.homework()
         current_homework = homework_data.get('current', [])
 
+        print("\n" * 82)
+        print("                 ------- Your Current Homework -------                 ")
         if not current_homework:
-            print("                 No upcoming homework assignments found.")
-            print("")
+            print("\n                 No upcoming homework assignments found.")
         else:
-
-            print("-" * 30)  # Separator for the next homework
-
+            print("-" * 30)
             for hw in current_homework:
                 activity = hw.get('activity', 'N/A')
                 subject = hw.get('subject', 'N/A')
                 due_date = hw.get('due_date', 'N/A')
+                due_text = hw.get('due_text', 'N/A')
                 set_by = hw.get('set_by', 'N/A')
                 status = hw.get('status', 'N/A')
-                due_text = hw.get('due_text', 'N/A')  # This often gives "today", "in X days", etc.
-                id = hw.get('id', 'N/A') # Homework ID. Will probably be useful in a future update.
+                hw_id = hw.get('id', 'N/A')
 
-
-                print("")
-                print(f"Activity: {activity}")
+                print(f"\nActivity: {activity}")
                 print(f"Subject: {subject}")
                 print(f"Due Date: {due_date} ({due_text})")
                 print(f"Set By: {set_by}")
                 print(f"Status: {status}")
-                print(f"ID: {id}")
-
-                # Optional: Display attachments if any
-                attachments = hw.get('attachments', [])
-                if attachments:
-                    print("")
-                    print("    Attachments:")
-                    for att in attachments:
-                        print(f"      - {att.get('filename', 'N/A')}")
-
-                print("")
-                print("-" * 30)  # Prints a separating line
-
-        # Add more blank lines for spacing if desired
-        print("\n" * 14)  # Prints 14 blank lines
+                print(f"ID: {hw_id}")
+                print("-" * 30)
+        print("\n" * 14)
 
     except Exception as e:
         print(f"An error occurred while fetching your homework: {e}")
 
-# handler.py
-
-# ... (rest of your imports and other functions like homework, auth, etc.) ...
-
 def homeworkold():
     try:
-        homework_data = me.homework()  # Call the homework method to get all data
+        homework_data = me.homework()
+        past_homework = homework_data.get('past', [])
 
         print("\n" * 80)
         print("                 ------- Your Past Homework -------                 ")
-        print("")
-
-        past_homework = homework_data.get('past', []) # Get only the 'past' homework
-
         if not past_homework:
-            print("                 No past homework assignments found.")
-            print("")
+            print("\n                 No past homework assignments found.")
         else:
-            print("-" * 30)  # Separator for the first homework item
-
+            print("-" * 30)
             for hw in past_homework:
                 activity = hw.get('activity', 'N/A')
                 subject = hw.get('subject', 'N/A')
                 due_date = hw.get('due_date', 'N/A')
+                due_text = hw.get('due_text', 'N/A')
                 set_by = hw.get('set_by', 'N/A')
                 status = hw.get('status', 'N/A')
-                due_text = hw.get('due_text', 'N/A')  # This often gives "X days ago", etc.
 
-                print("")
-                print(f"Activity: {activity}")
+                print(f"\nActivity: {activity}")
                 print(f"Subject: {subject}")
                 print(f"Due Date: {due_date} ({due_text})")
                 print(f"Set By: {set_by}")
                 print(f"Status: {status}")
-
-                # Optional: Display attachments if any
-                attachments = hw.get('attachments', [])
-                if attachments:
-                    print("")
-                    print("    Attachments:")
-                    for att in attachments:
-                        print(f"      - {att.get('filename', 'N/A')}")
-
-                print("")
-                print("-" * 30)  # Prints a separating line
-
+                print("-" * 30)
     except Exception as e:
         print(f"An error occurred while fetching your past homework: {e}")
 
 def homeworkinfo(homework_id):
     try:
         homeworkinfo_data = me.homeworkInfo(homework_id=homework_id)
+        activity_name = homeworkinfo_data.get('activity', 'unnamed assignment')
 
         print("\n" * 80)
-        print(f"                 ------- Homework Details for {homeworkinfo_data.get('activity', 'unnamed assignment')} -------                 ")
-        print("")
-
+        print(f"                 ------- Homework Details: {activity_name} -------                 ")
         if homeworkinfo_data:
             raw_description = homeworkinfo_data.get('description', 'No description available.')
-
-            # --- Manual HTML Stripping and Entity Decoding ---
-            # Removes HTML tags using regex as it originally came out a bit unclean and had some HTML and CSS elements.
-            clean_description = re.sub(r'<[^>]+>', '', raw_description)
-            clean_description = html.unescape(clean_description)
-            clean_description = ' '.join(clean_description.split()).strip()
+            clean_description = ' '.join(re.sub(r'<[^>]+>', '', html.unescape(raw_description)).split()).strip()
 
             print("-" * 30)
-            print(f"Activity: {homeworkinfo_data.get('activity', 'N/A')}")
-            print(f"Subject: {homeworkinfo.get('subject', 'N/A')}")
+            print(f"Activity: {activity_name}")
+            print(f"Subject: {homeworkinfo_data.get('subject', 'N/A')}")
             print(f"Due Date: {homeworkinfo_data.get('due_date', 'N/A')} ({homeworkinfo_data.get('due_text', 'N/A')})")
             print(f"Set By: {homeworkinfo_data.get('set_by', 'N/A')}")
             print(f"Status: {homeworkinfo_data.get('status', 'N/A')}")
-            print(f"Description: {clean_description}") # Use the manually cleaned description here
+            print(f"Description: {clean_description}")
             print(f"Available From: {homeworkinfo_data.get('available_date', 'N/A')} ({homeworkinfo_data.get('available_text', 'N/A')})")
-            print(f"Duration: {homeworkinfo_data.get('duration', 'N/A')} minutes")
-            print(f"Source: {homeworkinfo_data.get('source', 'N/A')}")
 
             attachments = homeworkinfo_data.get('attachments', [])
             if attachments:
                 print("\n    Attachments:")
                 for att in attachments:
-                    print(f"      - Filename: {att.get('filename', 'N/A')}")
-                    print(f"        Filesize: {att.get('filesize', 'N/A')} bytes")
-                    print(f"        MIME Type: {att.get('mime_type', 'N/A')}")
+                    print(f"      - {att.get('filename', 'N/A')} ({att.get('filesize', 'N/A')} bytes)")
             print("-" * 30)
         else:
-            print(f"                 No detailed information found for homework ID: {homework_id}")
-
+            print(f"\n                 No detailed information found for homework ID: {homework_id}")
         print("\n" * 14)
-
     except Exception as e:
-            print(f"An error occurred while fetching homework info for ID {homework_id}: {e}") # The e shows the error in more depth
+        print(f"An error occurred fetching details for homework ID {homework_id}: {e}")
