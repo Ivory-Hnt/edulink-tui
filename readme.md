@@ -6,18 +6,11 @@ AN ERROR IN THE CODE HAS CAUSED THE LATEST RELEASE TO NOT RECOGNISE ANY MODULES 
 
 # Installation
 
-I will make an installation script soon. For now, follow these semi-simple instructions for installation:
-
-1. Download the latest Edul release as a .zip
-2. Copy, paste and execute this into your terminal:
-   
 ```
-cd ~/Downloads
-unzip edulink-tui-1.1.3.zip
-cd edulink-tui-1.1.3
-sudo cp * /usr/local/bin -r
-cd /usr/local/bin
-sudo chmod +x edul
+git clone https://github.com/Ivory-Hnt/edulink-tui.git
+cd edulink-tui
+sudo chmod +x install.sh
+sudo install.sh
 ```
 
 4. Run edul -l
@@ -65,3 +58,4 @@ If a longer version of a command is available in the main command, it is avaiabl
 ### Accounts
 
 As stated above, you can have a near infinite amount of edulink accounts for edul. When you execute a command such as `edul --timetable`, it will default to the account that has the account ID, 1. To make it show the timetable for the account that has the account ID, 2, you can do this: `edul --timetable 2`. By adding the account ID as an argument at the end of a command, it tells it that it will run this command with the login details for the account with the ID, 2. This works for every other command. Obviously it won't work for commands such as `edul --help`
+
