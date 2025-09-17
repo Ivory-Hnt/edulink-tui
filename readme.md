@@ -81,6 +81,11 @@ As stated above, you can have a near infinite amount of edulink accounts for edu
 
 
 
+Please be aware that this project is not stolen from 'Sodium'. Sodium is one of my internet aliases, not somebody who has had their project stolen from.
+
+
+
+
 
 
 
