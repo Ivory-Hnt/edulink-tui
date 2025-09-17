@@ -16,7 +16,7 @@ fi
 # Install required Python packages
 echo "Installing required Python packages..."
 pip install requests || {
-    echo "Error: Failed to install requests. Please check your internet connection and try again."
+    echo "Error: Failed to install requests. Please check your internet connection and try again. If the issue persists, make sure you have Python PIP installed."
     exit 1
 }
 echo "✓ Python dependencies installed successfully"
