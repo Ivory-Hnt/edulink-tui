@@ -29,8 +29,8 @@ from datetime import datetime
 class EdulUpdater:
     def __init__(self):
         # GitHub repository information
-        self.github_user = "your-username"  # Replace with actual GitHub username
-        self.github_repo = "edul"           # Replace with actual repository name
+        self.github_user = "ivory-hnt"  
+        self.github_repo = "edulink-tui"           
         self.api_url = f"https://api.github.com/repos/{self.github_user}/{self.github_repo}/releases/latest"
         self.current_version_file = self.get_version_file_path()
         
