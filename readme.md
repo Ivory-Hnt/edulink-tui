@@ -17,9 +17,6 @@ sudo chmod +x install.sh
 sudo ./install.sh
 ```
 
-4. Run edul -l
-5. Enjoy!
-
 Android (Termux):
 
 Please copy and paste each command into your termux shell one by one:
@@ -81,6 +78,7 @@ If a longer version of a command is available in the main command, it is avaiabl
 ### Accounts (pre version 1.1.2)
 
 As stated above, you can have a near infinite amount of edulink accounts for edul. When you execute a command such as `edul --timetable`, it will default to the account that has the account ID, 1. To make it show the timetable for the account that has the account ID, 2, you can do this: `edul --timetable 2`. By adding the account ID as an argument at the end of a command, it tells it that it will run this command with the login details for the account with the ID, 2. This works for every other command. Obviously it won't work for commands such as `edul --help`
+
 
 
 
