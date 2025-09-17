@@ -1,7 +1,7 @@
 # ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 # │███████╗██████╗ ██╗   ██╗██╗     ██╗███╗   ██╗██╗  ██╗    ████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗         ████████╗██╗   ██╗██╗│
 # │██╔════╝██╔══██╗██║   ██║██║     ██║████╗  ██║██║ ██╔╝    ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║         ╚══██╔══╝██║   ██║██║│
-# │█████╗  ██║  ██║██║   ██║██║     ██║██╔██╗ ██║█████╔╝        ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║            ██║   ██║   ██║██║│
+# │█████╗  ██║  ██║██║   ██║██║     ██║██╔██╗ ██║█████╔╝        ██║   █████╗  ██████╔╝██╔████▔██║██║██╔██╗ ██║███████║██║            ██║   ██║   ██║██║│
 # │██╔══╝  ██║  ██║██║   ██║██║     ██║██║╚██╗██║██╔═██╗        ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║            ██║   ██║   ██║██║│
 # │███████╗██████╔╝╚██████╔╝███████╗██║██║ ╚████║██║  ██╗       ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗       ██║   ╚██████╔╝██║│
 # │╚══════╝╚═════╝  ╚═════╝ ╚══════╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝       ╚═╝    ╚═════╝ ╚═╝│
@@ -80,7 +80,7 @@ if len(sys.argv) > 1:
             print(f"\nError: Could not save login details to file {json_file_path}: {e}")
             sys.exit(1)
 
-    # --- NEW: Set Active Account Command ---
+    # --- Set Active Account Command ---
     # Usage: edul -a <id>
     elif sys.argv[1] == '--account' or sys.argv[1] == '-a':
         if len(sys.argv) > 2 and sys.argv[2].isdigit():
@@ -104,6 +104,52 @@ if len(sys.argv) > 1:
         else:
             print("Error: Please provide a valid account ID.")
             print("Usage: edul -a <id>")
+
+    # --- Update Command ---
+    # Usage: edul --update or edul -u
+    elif sys.argv[1] == '--update' or sys.argv[1] == '-u':
+        try:
+            from updater import EdulUpdater
+            updater = EdulUpdater()
+            
+            # Check for force flag
+            force_update = '--force' in sys.argv or '-f' in sys.argv
+            
+            success = updater.update(force=force_update)
+            if not success:
+                sys.exit(1)
+                
+        except ImportError:
+            print("❌ Error: Updater module not found.")
+            print("Please reinstall Edul using the installer to get update functionality.")
+            sys.exit(1)
+        except Exception as e:
+            print(f"❌ Update failed: {e}")
+            sys.exit(1)
+
+    # --- Version Command ---
+    # Usage: edul --version or edul -v
+    elif sys.argv[1] == '--version' or sys.argv[1] == '-v':
+        try:
+            from updater import EdulUpdater
+            updater = EdulUpdater()
+            current_version = updater.get_current_version()
+            
+            print(f"Edul version: {current_version}")
+            
+            # Check if updates are available
+            print("\nChecking for updates...")
+            has_update, release_info = updater.check_for_updates()
+            if has_update and release_info:
+                latest_version = release_info['tag_name'].lstrip('v')
+                print(f"Latest version available: {latest_version}")
+                print("Run 'edul --update' to update.")
+            
+        except ImportError:
+            print("Edul version: unknown")
+            print("(Version tracking unavailable - please reinstall with updated installer)")
+        except Exception as e:
+            print(f"Edul version: unknown (error: {e})")
 
     # --- Help Command ---
     elif sys.argv[1] == '--help':
