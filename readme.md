@@ -1,7 +1,11 @@
 # Edul - Edulink-TUI 
-A text based Edulink client.
+A text based Edulink client for Linux.
+
+## Notice: Edul only works on Linux and Android, not Windows, Mac or IOS. To use Edul on Windows, switch to Linux (or setup a WSL instance such as Arch or Ubuntu if your stuborn).
 
 # Installation
+
+Desktop/PC:
 
 Please copy this, paste it then execute it in your shell:
 
@@ -15,17 +19,32 @@ sudo ./install.sh
 4. Run edul -l
 5. Enjoy!
 
+Android (Termux):
+
+Please copy and paste each command into your termux shell one by one:
+
+```
+git clone https://github.com/Ivory-Hnt/edulink-tui.git
+cd edulink-tui
+chmod +x install-tmux.sh
+sudo ./install-tmux.sh
+```
+
 ### Troubleshooting
 
-It may tell you that the edul file exists but is not executable. To fix this, do `cd ~/usr/local/bin`, then `sudo chmod +x edul`.
+It may tell you that the edul file exists but is not executable, or you do not have permission to run the file. To fix this, do `cd ~/usr/local/bin`, then `sudo chmod +x edul` (this only works on desktop and not termux).
+
+If you are on an older version of edulink-tui, it may give you an error any time you try to use any file using python. This is because the python module `requests` is not installed. To install it, simply do `pip install requests`.
 
 If it tells you something along the lines of, the folder edul/data can not be created or edul/data/data1.json can not be created/does not exist, create a directory in your home directory called edul. Within that, create a directory called data. Then, within that, create a file called data1.json. You can also create a data2.json ect for as many accounts you have saved.
+
+If you get errors with making the installer executable on Termux, just simply execute `bash install-tmux.sh` (this only works on bash shell. If you don't know what this is, or haven't changed your shell, you are running bash).
 
 You should now be able to execute the `edul` command without any errors. If you can't, send me a DM on discord (sodiumicecream).
 
 ## Quick Notice
 
-This information might be out of date as updating the readme.md for this project is the least of my worries in life. If you need assistance, dm me on discord at `sodiumicecream` or email me at `ivory@ivoryhnt.dev`. The instructions for installing edul and `edul --help` are always up to date
+This information might be out of date as updating the readme.md for this project is the least of my worries in life. If you need assistance, dm me on discord at `sodiumicecream` or email me at `ivory@ivoryhnt.dev`. The instructions for installing edul and `edul --help` are always up to date.
 
 # Setup
 
@@ -61,6 +80,7 @@ If a longer version of a command is available in the main command, it is avaiabl
 ### Accounts
 
 As stated above, you can have a near infinite amount of edulink accounts for edul. When you execute a command such as `edul --timetable`, it will default to the account that has the account ID, 1. To make it show the timetable for the account that has the account ID, 2, you can do this: `edul --timetable 2`. By adding the account ID as an argument at the end of a command, it tells it that it will run this command with the login details for the account with the ID, 2. This works for every other command. Obviously it won't work for commands such as `edul --help`
+
 
 
 
